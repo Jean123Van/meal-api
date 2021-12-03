@@ -22,4 +22,7 @@ export class UsersEntity {
 
   @Column({ nullable: true })
   age?: string;
+
+  @Column({ nullable: true })
+  avatar_url?: string;
 }

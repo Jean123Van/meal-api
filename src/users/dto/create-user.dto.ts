@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
+  IsString,
   Matches,
   MaxLength,
   MinLength,
@@ -61,4 +62,8 @@ export class CreateUserDto {
   @IsNumberString()
   @IsOptional()
   age?: string;
+
+  @IsString()
+  @IsOptional()
+  avatar_url?: string;
 }
