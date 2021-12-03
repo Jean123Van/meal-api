@@ -14,8 +14,9 @@ export class CreateUserDto {
   @MaxLength(20, {
     message: 'Maximum username length is twenty (20) characters.',
   })
-  @Matches(/[a-zA-Z0-9\-_]{1,20}/, {
-    message: 'Username must be alpha-numeric with no spaces.',
+  @Matches(/[.a-zA-Z 0-9\-_]{1,20}/, {
+    message:
+      'Username must be alpha-numeric with spaces, dashes, or underscores.',
   })
   @Matches(/^[.a-z A-Z_0-9\-]+$/, {
     message:
@@ -39,7 +40,9 @@ export class CreateUserDto {
   last_name: string;
 
   @IsEmail()
-  @MaxLength(32, { message: 'Email maximum length is sixty (32) characters.' })
+  @MaxLength(32, {
+    message: 'Email maximum length is thirty-two (32) characters.',
+  })
   email: string;
 
   @IsNotEmpty({ message: 'Password cannot be empty.' })
@@ -47,10 +50,10 @@ export class CreateUserDto {
   @MaxLength(32, {
     message: 'Password maximum length is thirty-two (32) characters.',
   })
-  @Matches(/[a-z]+}/g, { message: 'Password must have a lowercase letter.' })
-  @Matches(/[A-Z]+}/g, { message: 'Password must have an uppercase letter.' })
-  @Matches(/[0-9]+}/g, { message: 'Password must have a number.' })
-  @Matches(/[^a-zA-Z 0-9]+$}/, {
+  @Matches(/[a-z]+/, { message: 'Password must have a lowercase letter.' })
+  @Matches(/[A-Z]+/, { message: 'Password must have an uppercase letter.' })
+  @Matches(/[0-9]+/, { message: 'Password must have a number.' })
+  @Matches(/[^a-zA-Z 0-9]+/, {
     message: 'Password must have a special character.',
   })
   password: string;
