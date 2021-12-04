@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersEntity } from './entities/user.entity';
 
 import { UsersRepository } from './users.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,10 +13,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<UsersEntity> {
     try {
-      Logger.log('Sending user save request.');
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+      createUserDto.password = hashedPassword;
       return await this.usersRepository.save(createUserDto);
     } catch (err) {
-      Logger.log(err);
+      Logger.log('\nError saving user.\n', err);
       throw new HttpException(
         "We couldn't register you. Please try again.",
         HttpStatus.INTERNAL_SERVER_ERROR,

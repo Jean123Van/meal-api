@@ -14,13 +14,8 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() loginDto: LoginDto) {
-    return this.authService.create(loginDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Get()
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 }

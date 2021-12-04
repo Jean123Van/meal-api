@@ -1,13 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { UsersRepository } from '../users/users.repository';
+
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  create(loginDto: LoginDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(private readonly usersRepository: UsersRepository) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async login(loginDto: LoginDto) {
+    const identifier = loginDto.identifier;
+    const searchResults = await this.usersRepository.find({
+      where: [{ username: identifier }, { email: identifier }],
+    });
+    if (searchResults.length == 0) {
+      Logger.log('Invalid username/email.', identifier);
+      throw new HttpException('Invalid login details.', HttpStatus.BAD_REQUEST);
+    }
+
+    const foundPassword = searchResults[0].password;
+    const passwordMatch = await bcrypt.compare(
+      loginDto.password,
+      foundPassword,
+    );
+    if (!passwordMatch) {
+      Logger.log('Invalid password.', loginDto.password);
+      throw new HttpException('Invalid login details.', HttpStatus.BAD_REQUEST);
+    }
   }
 }
