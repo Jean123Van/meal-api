@@ -11,21 +11,6 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UsersEntity> {
-    try {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
-      createUserDto.password = hashedPassword;
-      return await this.usersRepository.save(createUserDto);
-    } catch (err) {
-      Logger.log('\nError saving user.\n', err);
-      throw new HttpException(
-        "We couldn't register you. Please try again.",
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   findAll(): Promise<UsersEntity[]> {
     return this.usersRepository.find();
   }
