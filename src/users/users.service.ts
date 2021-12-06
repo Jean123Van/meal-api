@@ -6,13 +6,18 @@ import { UsersEntity } from './entities/user.entity';
 
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
+import { PaginationOptions } from '../common/pagination-options.interface';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  findAll(): Promise<UsersEntity[]> {
-    return this.usersRepository.find();
+  findAll(paginationOptions: PaginationOptions): Promise<UsersEntity[]> {
+    
+    return this.usersRepository.find({
+      skip: Number(paginationOptions.page) * Number(paginationOptions.per_page),
+      take: Number(paginationOptions.per_page),
+    });
   }
 
   findOne(uid: string): Promise<UsersEntity> {
