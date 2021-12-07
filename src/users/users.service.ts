@@ -12,8 +12,38 @@ import { PaginationOptions } from '../common/pagination-options.interface';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  async register(createUserDto: CreateUserDto) {
+    try {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = bcrypt.hashSync(createUserDto.password, salt);
+      createUserDto.password = hashedPassword;
+      const { first_name, last_name, email } = await this.usersRepository.save(
+        createUserDto,
+      );
+      return {
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+      };
+    } catch (err) {
+      Logger.log('\nError saving user.\n', err);
+      throw new HttpException(
+        "We couldn't register you. Please try again.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   findAll(paginationOptions: PaginationOptions): Promise<UsersEntity[]> {
     return this.usersRepository.find({
+      select: [
+        'user_id',
+        'first_name',
+        'last_name',
+        'email',
+        'avatar_url',
+        'age',
+      ],
       skip: Number(paginationOptions.page) * Number(paginationOptions.per_page),
       take: Number(paginationOptions.per_page),
     });
@@ -29,6 +59,6 @@ export class UsersService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository.delete({ user_id: id });
   }
 }
