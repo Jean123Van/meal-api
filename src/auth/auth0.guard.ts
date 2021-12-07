@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { expressJwtSecret } from 'jwks-rsa';
@@ -42,6 +43,7 @@ export class Auth0Guard implements CanActivate {
       await checkJwt(request, response);
       return true;
     } catch (err) {
+      Logger.log('Token check resulted in error.', err);
       throw new UnauthorizedException(err);
     }
   }
