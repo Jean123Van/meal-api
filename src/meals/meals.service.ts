@@ -70,15 +70,17 @@ export class MealsService {
         ({mealType,userId} = mealType)
         const meal = await this.mealRepository.find({userId})
 
-        let chosenMeal = []
-
-        meal.map((a)=>{
-            if(a.mealType.includes(mealType)){
-                chosenMeal.push(a)
-            }
-        })
-        
-        return chosenMeal
+        if(mealType!==''){
+            let chosenMeal = []
+            
+            meal.map((a)=>{
+                if(a.mealType.includes(mealType)){
+                    chosenMeal.push(a)
+                }
+            })
+            return chosenMeal
+        } 
+        return meal
     }
 
 }
