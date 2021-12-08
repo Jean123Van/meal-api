@@ -20,11 +20,7 @@ export class UsersService {
       const { first_name, last_name, email } = await this.usersRepository.save(
         createUserDto,
       );
-      return {
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-      };
+      return String(email);
     } catch (err) {
       Logger.log('\nError saving user.\n', err);
       throw new HttpException(
