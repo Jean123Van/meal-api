@@ -6,6 +6,7 @@ import { MealsModule } from './meals/meals.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AppService } from './app.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
