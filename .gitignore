@@ -5,6 +5,9 @@
 /dist
 /node_modules
 
+# Auto-generated based on package.json
+package-lock.json
+
 # Logs
 logs
 *.log
