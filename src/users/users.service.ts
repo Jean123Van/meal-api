@@ -13,21 +13,11 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async register(createUserDto: CreateUserDto) {
-    try {
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = bcrypt.hashSync(createUserDto.password, salt);
-      createUserDto.password = hashedPassword;
-      const { first_name, last_name, email } = await this.usersRepository.save(
-        createUserDto,
-      );
-      return String(email);
-    } catch (err) {
-      Logger.log('\nError saving user.\n', err);
-      throw new HttpException(
-        "We couldn't register you. Please try again.",
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = bcrypt.hashSync(createUserDto.password, salt);
+    createUserDto.password = hashedPassword;
+    const { email } = await this.usersRepository.register(createUserDto);
+    return String(email);
   }
 
   findAll(paginationOptions: PaginationOptions): Promise<UsersEntity[]> {
