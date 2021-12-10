@@ -33,12 +33,14 @@ export class UsersController {
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
-
+  
+  @UseGuards(Auth0Guard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
-
+  
+  @UseGuards(Auth0Guard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
