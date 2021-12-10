@@ -22,8 +22,7 @@ export class Auth0Guard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.getArgByIndex(0);
-    const response = context.getArgByIndex(1);
+    const [request, response, next] = context.getArgs();
 
     const checkJwt = promisify(
       jwt({
