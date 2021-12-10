@@ -37,7 +37,13 @@ export class AuthService {
       });
       throw new HttpException('Invalid login details.', HttpStatus.BAD_REQUEST);
     } else {
-      return await this.requestApiToken();
+      let result = await this.requestApiToken();
+      const { username, user_id, email, avatar_url } = searchResults[0];
+      result.username = username;
+      result.avatar_url = avatar_url;
+      result.user_id = user_id;
+      
+      return result;
     }
   }
 
