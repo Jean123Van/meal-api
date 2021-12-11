@@ -1,13 +1,10 @@
-import { IsOptional } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IsOptional } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
-@Entity('meals')
-export class MealEntity {
+@Entity('default meals')
+export class DefaultMeals {
     @PrimaryGeneratedColumn('uuid')
     id:string;
-
-    @Column()
-    userId:string;
 
     @Column()
     mealName:string;
@@ -18,7 +15,7 @@ export class MealEntity {
     @Column({nullable:true})
     recipe:string;
 
-    @Column({type: "jsonb",nullable:true})
+    @Column({type: "jsonb", nullable:true})
     ingredients:string[]
 
     @Column({type:'numeric'})

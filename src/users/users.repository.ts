@@ -31,20 +31,8 @@ export class UsersRepository extends Repository<UsersEntity> {
     // END Section Check username...
 
     // START Section Save
-    this.save(createUserDto)
-      .then(
-        () => {
-          Logger.log('\nUser registration request sent.');
-        },
-        () => {
-          Logger.log('\nUser registration request rejected.');
-        },
-      )
-      .catch(() => {
-        Logger.log('\nUser registration request resulted in ERROR.');
-      });
-
-    return createUserDto;
+    return await this.save(createUserDto)
+      
     // END Section Save
   }
 }
