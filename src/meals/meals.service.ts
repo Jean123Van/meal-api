@@ -84,7 +84,7 @@ export class MealsService {
         const meal = await this.mealRepository.find({userId})
         const defaultMeals = await this.defaultMealsRepository.find()
 
-        if(q!==null){
+        if(q!=='all'){
             let chosenMeal = []
             
             meal.map((a)=>{

@@ -22,8 +22,8 @@ export class MealsController {
 
     //delete added meal from server - finished
     @Delete('delete')
-    deleteMeal(@Body() mealId){
-        return this.mealsService.deleteMeal(mealId.mealId)
+    deleteMeal(@Headers() meal){
+        return this.mealsService.deleteMeal(meal.id)
     }
 
     //creates a meal plan another day in the next week - finished
