@@ -19,7 +19,7 @@ export class MealEntity {
     recipe:string;
 
     @Column({type: "jsonb",nullable:true})
-    ingredients:string[]
+    ingredients:string[];
 
     @Column({type:'numeric'})
     protein: number;
@@ -31,5 +31,5 @@ export class MealEntity {
     calories: number;
 
     @Column({type:"jsonb"})
-    mealType: string[]
+    mealType:string[];
 }

@@ -12,8 +12,8 @@ export class AddMeal {
     recipe?:string;
 
     @IsOptional()
-    ingredients?:[string]
+    ingredients?
 
     @IsNotEmpty()
-    mealType:[string]
+    mealType
 }

@@ -11,8 +11,8 @@ export class EditMealDto{
     recipe?:string;
 
     @IsOptional()
-    ingredients?:[string]
+    ingredients?
 
     @IsNotEmpty()
-    mealType:[string]
+    mealType
 }

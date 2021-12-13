@@ -20,10 +20,12 @@ export class MealsService {
                 private readonly defaultMealsRepository:DefaultMealsRepository){}
 
     async addMeal(addMeal:AddMeal, userId){
-
+        addMeal.ingredients = JSON.parse(addMeal.ingredients)
+        addMeal.mealType = JSON.parse(addMeal.mealType)
+        
         const nutrients = await this.commonMethods.calcMealNutrition(addMeal)
 
-        return this.mealRepository.save({...addMeal, userId, ...nutrients})
+        return this.mealRepository.save({ ...addMeal,userId, ...nutrients})
     }
 
     deleteMeal(mealId){
@@ -103,6 +105,8 @@ export class MealsService {
     }
 
     async editMealDetails(editMeal,mealId){
+        editMeal.ingredients = JSON.parse(editMeal.ingredients)
+        editMeal.mealType = JSON.parse(editMeal.mealType)
         const nutrients = await this.commonMethods.calcMealNutrition(editMeal)
         return this.mealRepository.update({id:mealId},{...editMeal,...nutrients})
     }
