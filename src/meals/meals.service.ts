@@ -80,6 +80,7 @@ export class MealsService {
 
     async getSpecificMeals(filter,userId){
         let {q,page=1,per_page=5} = filter
+        let result = []
         per_page = Number(per_page)
         page = Number(page)
         
@@ -99,9 +100,11 @@ export class MealsService {
                     chosenMeal.push(a)
                 }
             })
-            return chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
+            result = chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
+        } else {
+            result = [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
         } 
-        return [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
+        return {result, total:result.length}
     }
 
     async editMealDetails(editMeal,mealId){
@@ -169,6 +172,7 @@ export class MealsService {
 
     async searchMeals(filter,userId){
         let {q, per_page=5 ,page=1 } = filter
+        let result = []
         per_page = Number(per_page)
         page = Number(page)
 
@@ -183,8 +187,8 @@ export class MealsService {
                 return a
             }
         })
-
-        return value.slice((page-1)*per_page,per_page+((page-1)*per_page))
+        result = value.slice((page-1)*per_page,per_page+((page-1)*per_page))
+        return {result, total:result.length}
     }
 
 }
