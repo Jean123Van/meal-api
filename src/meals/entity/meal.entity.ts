@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsOptional } from "class-validator";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('meals')
 export class MealEntity {
@@ -9,16 +10,16 @@ export class MealEntity {
   userId: string;
 
   @Column()
-  mealname: string;
+  mealName: string;
 
-  @Column()
-  mealImage: string;
+    @Column({nullable:true})
+    mealImage:string;
 
-  @Column()
-  recipe: string;
+    @Column({nullable:true})
+    recipe:string;
 
-  @Column({ array: true })
-  ingredients: string;
+    @Column({type: "jsonb",nullable:true})
+    ingredients:string[]
 
   @Column({ type: 'numeric' })
   protein: number;
@@ -29,6 +30,6 @@ export class MealEntity {
   @Column({ type: 'numeric' })
   calories: number;
 
-  @Column({ array: true })
-  mealType: string;
+  @Column({type:"jsonb"})
+  mealType: string[]
 }

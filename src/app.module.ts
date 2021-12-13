@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RestaurantsModule } from './restaurants/restaurants.module';
 import { MealsModule } from './meals/meals.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { ScheduleModule } from '@nestjs/schedule';
+import { DefaultMealsModule } from './default-meals/default-meals.module';
 
 @Module({
   imports: [
@@ -29,10 +30,11 @@ import { AppController } from './app.controller';
         logging: true,
       }),
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
-    RestaurantsModule,
     MealsModule,
+    DefaultMealsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

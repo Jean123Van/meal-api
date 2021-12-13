@@ -7,17 +7,28 @@ import { UsersEntity } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
 import { PaginationOptions } from '../common/pagination-options.interface';
+import { DailyMealPlanRepository } from 'src/meals/repository/daily-meal-plan.repository';
+import { MealRepository } from 'src/meals/repository/meal.repository';
+import { DefaultMealsRepository } from 'src/default-meals/repository/default-meals.repository';
+import { CommonMethods } from 'src/common-methods/common-methods';
+import { CronJob } from 'cron';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(private readonly usersRepository: UsersRepository,
+              private readonly commonMethods:CommonMethods){}
 
   async register(createUserDto: CreateUserDto) {
+
+    
     const salt = await bcrypt.genSalt();
     const hashedPassword = bcrypt.hashSync(createUserDto.password, salt);
     createUserDto.password = hashedPassword;
-    const { email } = await this.usersRepository.register(createUserDto);
-    return String(email);
+    const { email, user_id } = await this.usersRepository.register(createUserDto);
+
+    this.commonMethods.createMealPlan(0,user_id)
+
+    return email
   }
 
   findAll(paginationOptions: PaginationOptions): Promise<UsersEntity[]> {

@@ -11,14 +11,14 @@ export class DailyMealPlanEntity {
     userId:string;
 
     @Column()
-    date:Date;
+    date:string;
 
-    @Column()
+    @Column({nullable:true})
     breakfast: string;
 
-    @Column()
+    @Column({nullable:true})
     lunch: string;
 
-    @Column()
+    @Column({nullable:true})
     dinner: string;
 }

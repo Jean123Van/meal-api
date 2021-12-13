@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
 
-export class AddMeal {
-
+export class EditMealDto{
     @IsNotEmpty()
     mealName:string;
 
