@@ -74,13 +74,14 @@ export class MealsService {
 
         async function format(object){
             let {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} = object
-            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories}
-        }
+            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} 
+        } 
     }
 
     async getSpecificMeals(filter,userId){
         let {q,page=1,per_page=5} = filter
         let result = []
+        let totalResults = 0
         per_page = Number(per_page)
         page = Number(page)
         
@@ -101,10 +102,12 @@ export class MealsService {
                 }
             })
             result = chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
+            totalResults = chosenMeal.length
         } else {
             result = [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
+            totalResults = [meal,defaultMeals].length
         } 
-        return {result, total:result.length}
+        return {result, total:totalResults}    
     }
 
     async editMealDetails(editMeal,mealId){
@@ -188,7 +191,7 @@ export class MealsService {
             }
         })
         result = value.slice((page-1)*per_page,per_page+((page-1)*per_page))
-        return {result, total:result.length}
+        return {result, total:allMeals.length}
     }
 
 }
