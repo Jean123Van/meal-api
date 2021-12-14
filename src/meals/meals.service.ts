@@ -102,10 +102,10 @@ export class MealsService {
                 }
             })
             result = chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
-            totalResults = chosenMeal.length
+            totalResults = chosenMeal.flat().length
         } else {
             result = [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
-            totalResults = [meal,defaultMeals].length
+            totalResults = [meal,defaultMeals].flat().length
         } 
         return {result, total:totalResults}    
     }
@@ -191,7 +191,7 @@ export class MealsService {
             }
         })
         result = value.slice((page-1)*per_page,per_page+((page-1)*per_page))
-        return {result, total:allMeals.length}
+        return {result, total:value.length}
     }
 
 }
