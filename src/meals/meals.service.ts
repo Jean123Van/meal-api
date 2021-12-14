@@ -200,16 +200,18 @@ export class MealsService {
 
         const queryString = `SELECT *
         FROM MEALS
-        WHERE MEALS.INGREDIENTS ? '${keyword}'
-            OR MEALNAME ILIKE '%${keyword}%'
-            OR MEALTYPE ? '${mealType}' or '${mealType}' = 'all';`;
+        WHERE MEALS.INGREDIENTS ? '$1'
+            OR mealName ILIKE '%$1%'
+            OR MEALTYPE ? '$2'
+            OR '$2' = 'all';`;
         const queryStringDefaultMeals = `SELECT *
         FROM MEALS
-        WHERE DEFAULTMEALS.INGREDIENTS ? '${keyword}'
-            OR MEALNAME ILIKE '%${keyword}%'
-            OR MEALTYPE ? '${mealType}' or '${mealType}' = 'all';`;
-        const mealsResult: MealEntity[] = await getManagerInstance.query(queryString);
-        const defaultMealsResult: MealEntity[] = await getManagerInstance.query(queryStringDefaultMeals);
+        WHERE DEFAULTMEALS.INGREDIENTS ? '$1'
+            OR mealName ILIKE '%$1%'
+            OR MEALTYPE ? '$2'
+            OR '$2' = 'all';`;
+        const mealsResult: MealEntity[] = await getManagerInstance.query(queryString, [keyword, mealType]);
+        const defaultMealsResult: MealEntity[] = await getManagerInstance.query(queryStringDefaultMeals, [keyword, mealType]);
 
         return mealsResult.concat(defaultMealsResult);
     }
