@@ -60,6 +60,10 @@ export class MealsController {
     @Get('searchMeals')
     searchMeals(@Query() filter, @Headers() user){
         return this.mealsService.searchMeals(filter,user.id)
-    }    
+    }
 
+    @Get('filterMeals')
+    filterMeals(@Query() filterParams, @Headers() user) {
+        return this.mealsService.filterMeals(filterParams);
+    }
 }
