@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AddMeal } from './dto/add-meal.dto';
 import { DailyMealPlanRepository } from './repository/daily-meal-plan.repository';
 import { MealRepository } from './repository/meal.repository';
@@ -10,6 +10,8 @@ import { DefaultMealsRepository } from 'src/default-meals/repository/default-mea
 import { Filter } from 'src/common/query-pagination.interface';
 import { EditMealDto } from './dto/edit-meal.dto';
 import { EditMealPlan } from './dto/edit-mealPlan.dto';
+import { getManager } from 'typeorm';
+import { MealEntity } from './entity/meal.entity';
 
 @Injectable()
 export class MealsService {
@@ -20,10 +22,12 @@ export class MealsService {
                 private readonly defaultMealsRepository:DefaultMealsRepository){}
 
     async addMeal(addMeal:AddMeal, userId){
-
+        addMeal.ingredients = JSON.parse(addMeal.ingredients)
+        addMeal.mealType = JSON.parse(addMeal.mealType)
+        
         const nutrients = await this.commonMethods.calcMealNutrition(addMeal)
 
-        return this.mealRepository.save({...addMeal, userId, ...nutrients})
+        return this.mealRepository.save({ ...addMeal,userId, ...nutrients})
     }
 
     deleteMeal(mealId){
@@ -72,12 +76,14 @@ export class MealsService {
 
         async function format(object){
             let {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} = object
-            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories}
-        }
+            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} 
+        } 
     }
 
     async getSpecificMeals(filter,userId){
         let {q,page=1,per_page=5} = filter
+        let result = []
+        let totalResults = 0
         per_page = Number(per_page)
         page = Number(page)
         
@@ -97,12 +103,18 @@ export class MealsService {
                     chosenMeal.push(a)
                 }
             })
-            return chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
+            result = chosenMeal.slice((page-1)*per_page,per_page+((page-1)*per_page))
+            totalResults = chosenMeal.flat().length
+        } else {
+            result = [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
+            totalResults = [meal,defaultMeals].flat().length
         } 
-        return [meal,defaultMeals].flat().slice((page-1)*per_page,per_page+((page-1)*per_page))
+        return {result, total:totalResults}    
     }
 
     async editMealDetails(editMeal,mealId){
+        editMeal.ingredients = JSON.parse(editMeal.ingredients)
+        editMeal.mealType = JSON.parse(editMeal.mealType)
         const nutrients = await this.commonMethods.calcMealNutrition(editMeal)
         return this.mealRepository.update({id:mealId},{...editMeal,...nutrients})
     }
@@ -165,6 +177,7 @@ export class MealsService {
 
     async searchMeals(filter,userId){
         let {q, per_page=5 ,page=1 } = filter
+        let result = []
         per_page = Number(per_page)
         page = Number(page)
 
@@ -179,7 +192,25 @@ export class MealsService {
                 return a
             }
         })
+        result = value.slice((page-1)*per_page,per_page+((page-1)*per_page))
+        return {result, total:value.length}
+    }
 
-        return value.slice((page-1)*per_page,per_page+((page-1)*per_page))
+    async filterMeals(filterParams, userId): Promise<MealEntity> {
+        const {q, mealType = 'all', perPage = 5, page = 0} = filterParams;
+        const queryString = `SELECT *
+        FROM MEALS
+        WHERE MEALS.INGREDIENTS ? '${keyword}'
+            OR MEALNAME ILIKE '%${keyword}%'
+            OR MEALTYPE ? '${mealType}' or '${mealType}' = 'all';`;
+        const queryStringDefaultMeals = `SELECT *
+        FROM MEALS
+        WHERE DEFAULTMEALS.INGREDIENTS ? '${keyword}'
+            OR MEALNAME ILIKE '%${keyword}%'
+            OR MEALTYPE ? '${mealType}' or '${mealType}' = 'all';`;
+        const mealsResult: MealEntity[] = await getManager.query(queryString);
+        const defaultMealsResult: MealEntity[] = await getManager.query(queryStringDefaultMeals);
+
+        return mealsResult.concat(defaultMealsResult);
     }
 }
