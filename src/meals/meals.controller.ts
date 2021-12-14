@@ -63,7 +63,7 @@ export class MealsController {
     }
 
     @Get('filterMeals')
-    filterMeals(@Query() filterParams, @Headers() user) {
-        return this.mealsService.filterMeals(filterParams);
+    filterMeals(@Query() filterParams, @Headers() headers) {
+        return this.mealsService.filterMeals(filterParams, headers.id);
     }
 }

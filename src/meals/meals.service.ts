@@ -12,6 +12,7 @@ import { EditMealDto } from './dto/edit-meal.dto';
 import { EditMealPlan } from './dto/edit-mealPlan.dto';
 import { getManager } from 'typeorm';
 import { MealEntity } from './entity/meal.entity';
+import { MealSearchDto } from './dto/meal-search.dto';
 
 @Injectable()
 export class MealsService {
@@ -21,10 +22,7 @@ export class MealsService {
                 private readonly usersRepository:UsersRepository,
                 private readonly defaultMealsRepository:DefaultMealsRepository){}
 
-    async addMeal(addMeal:AddMeal, userId){
-        addMeal.ingredients = JSON.parse(addMeal.ingredients)
-        addMeal.mealType = JSON.parse(addMeal.mealType)
-        
+    async addMeal(addMeal:AddMeal, userId){       
         const nutrients = await this.commonMethods.calcMealNutrition(addMeal)
 
         return this.mealRepository.save({ ...addMeal,userId, ...nutrients})
@@ -196,8 +194,10 @@ export class MealsService {
         return {result, total:value.length}
     }
 
-    async filterMeals(filterParams, userId): Promise<MealEntity> {
-        const {q, mealType = 'all', perPage = 5, page = 0} = filterParams;
+    async filterMeals(filterParams, userId): Promise<MealEntity[]> {
+        const {keyword, mealType = 'all', perPage = 5, page = 0} = filterParams;
+        const getManagerInstance = getManager();
+
         const queryString = `SELECT *
         FROM MEALS
         WHERE MEALS.INGREDIENTS ? '${keyword}'
@@ -208,8 +208,8 @@ export class MealsService {
         WHERE DEFAULTMEALS.INGREDIENTS ? '${keyword}'
             OR MEALNAME ILIKE '%${keyword}%'
             OR MEALTYPE ? '${mealType}' or '${mealType}' = 'all';`;
-        const mealsResult: MealEntity[] = await getManager.query(queryString);
-        const defaultMealsResult: MealEntity[] = await getManager.query(queryStringDefaultMeals);
+        const mealsResult: MealEntity[] = await getManagerInstance.query(queryString);
+        const defaultMealsResult: MealEntity[] = await getManagerInstance.query(queryStringDefaultMeals);
 
         return mealsResult.concat(defaultMealsResult);
     }
