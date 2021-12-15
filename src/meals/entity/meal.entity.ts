@@ -31,5 +31,5 @@ export class MealEntity {
     calories: number;
 
     @Column({type:"jsonb"})
-    mealType:string[];
+    mealType: string[]
 }
