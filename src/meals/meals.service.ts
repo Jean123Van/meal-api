@@ -10,6 +10,9 @@ import { DefaultMealsRepository } from 'src/default-meals/repository/default-mea
 import { Filter } from 'src/common/query-pagination.interface';
 import { EditMealDto } from './dto/edit-meal.dto';
 import { EditMealPlan } from './dto/edit-mealPlan.dto';
+import { getManager } from 'typeorm';
+import { MealEntity } from './entity/meal.entity';
+import { MealSearchDto } from './dto/meal-search.dto';
 
 @Injectable()
 export class MealsService {
@@ -194,4 +197,25 @@ export class MealsService {
         return {result, total:value.length}
     }
 
+    async filterMeals(filterParams, userId): Promise<MealEntity[]> {
+        const {keyword, mealType = 'all', perPage = 5, page = 0} = filterParams;
+        const getManagerInstance = getManager();
+
+        const queryString = `SELECT *
+        FROM MEALS
+        WHERE MEALS.INGREDIENTS ? '$1'
+            OR mealName ILIKE '%$1%'
+            OR MEALTYPE ? '$2'
+            OR '$2' = 'all';`;
+        const queryStringDefaultMeals = `SELECT *
+        FROM MEALS
+        WHERE DEFAULTMEALS.INGREDIENTS ? '$1'
+            OR mealName ILIKE '%$1%'
+            OR MEALTYPE ? '$2'
+            OR '$2' = 'all';`;
+        const mealsResult: MealEntity[] = await getManagerInstance.query(queryString, [keyword, mealType]);
+        const defaultMealsResult: MealEntity[] = await getManagerInstance.query(queryStringDefaultMeals, [keyword, mealType]);
+
+        return mealsResult.concat(defaultMealsResult);
+    }
 }

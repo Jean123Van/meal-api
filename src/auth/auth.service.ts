@@ -38,10 +38,13 @@ export class AuthService {
       throw new HttpException('Invalid login details.', HttpStatus.BAD_REQUEST);
     } else {
       let result = await this.requestApiToken();
-      const { username, user_id, email, avatar_url } = searchResults[0];
+      const { username, first_name, last_name, user_id, email, avatar_url } = searchResults[0];
       result.username = username;
+      result.first_name = first_name;
+      result.last_name = last_name;
       result.avatar_url = avatar_url;
       result.user_id = user_id;
+      result.email = email;
       
       return result;
     }
