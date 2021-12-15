@@ -10,6 +10,7 @@ import { DefaultMealsRepository } from 'src/default-meals/repository/default-mea
 import { Filter } from 'src/common/query-pagination.interface';
 import { EditMealDto } from './dto/edit-meal.dto';
 import { EditMealPlan } from './dto/edit-mealPlan.dto';
+import { MealEntity } from './entity/meal.entity';
 
 @Injectable()
 export class MealsService {
@@ -48,7 +49,6 @@ export class MealsService {
     }
 
     async getDailyMealPlan(date,userId){
-
         const [mealPlan] = await this.dailyMealPlanRepository.find({date:date,userId})
         let id = mealPlan.id
         
@@ -73,8 +73,8 @@ export class MealsService {
         return {id, breakfast, lunch, dinner}
 
         async function format(object){
-            let {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} = object
-            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories} 
+            let {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories, mealType} = object
+            return {mealName, mealImage, recipe, ingredients, protein, carbohydrates, calories, mealType} 
         } 
     }
 
